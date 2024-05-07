@@ -12,11 +12,12 @@ const sendMailStatus = {
 router.post("/feedback", async (req, res, next) => {
   try {
     await sendMail(
-      req.body.txtMailFrom,
-      req.body.txtMailSubject,
-      req.body.txtMailBody
+      req.body.name,
+      req.body.email,
+      req.body.subject,
+      req.body.message
     );
-    console.log("Send mail success to email: " + req.body.txtMailFrom);
+    console.log("Send mail success to email: " + req.body.email);
     res.send(sendMailStatus.Success);
   } catch (error) {
     console.log("Send mail failed with error: " + error);
@@ -24,7 +25,7 @@ router.post("/feedback", async (req, res, next) => {
   }
 });
 
-const sendMail = (mailFrom, subject, htmlContent) => {
+const sendMail = (nameFrom, mailFrom, subject, htmlContent) => {
   const transporter = nodeMailer.createTransport({
     host: "smtp.gmail.com",
     port: "587",
@@ -40,9 +41,11 @@ const sendMail = (mailFrom, subject, htmlContent) => {
     to: process.env.NODEMAILER_EMAIL_TO,
     subject: subject,
     html:
-      "<span style='color: black'>You got a new message from </span><span style='font-style: italic; font-weight: bold;'>" +
+      "<span style='color: black'>Bạn vừa nhận được một feedback từ </span><span style='font-style: italic; font-weight: bold;'>" +
+      nameFrom +
+      " </span> có email là </span><span style='font-style: italic; font-weight: bold;'>" +
       mailFrom +
-      " </span> with message: <br/><blockquote style='border-left: 5px solid; margin-left: 20px; border-color: #f59e1d;'><p style='margin-left: 10px'>" +
+      " </span> với nội dung như sau: <br/><blockquote style='border-left: 5px solid; margin-left: 20px; border-color: #f59e1d;'><p style='margin-left: 10px'>" +
       htmlContent +
       "</p></blockquote>",
   };
